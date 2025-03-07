@@ -17,8 +17,9 @@ export class SendEmailController {
       from: EMAIL_FROM,
       to: EMAIL_TO,
       subject: "teste",
-      html: htmlFile(),
+      html: await htmlFile(),
     });
+
     if (error) {
       throw new Error(error.message);
     }

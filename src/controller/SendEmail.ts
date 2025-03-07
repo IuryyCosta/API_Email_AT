@@ -1,8 +1,14 @@
 import { env } from "@/schemas";
 import { Resend } from "resend";
+import { htmlFile } from "../utils/htmlFile";
+
+
+
+
 
 export class SendEmailController {
   async create() {
+  
     const { EMAIL_FROM, EMAIL_TO, RESEND_API_KEY } = env;
 
     const resend = new Resend(RESEND_API_KEY);
@@ -11,7 +17,7 @@ export class SendEmailController {
       from: EMAIL_FROM,
       to: EMAIL_TO,
       subject: "teste",
-      html: "<p>API RESEND <strong>RECEBA!!!!!!!!</strong>!</p>",
+      html: htmlFile(),
     });
     if (error) {
       throw new Error(error.message);

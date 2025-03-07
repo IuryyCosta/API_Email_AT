@@ -1,6 +1,6 @@
-[] - conectar com o banco oracle - [Iury]
-[] - usar o knex para fazer select - [Iury]
-[] - criar a função para fazer o select - [Iury]
+[] - conectar com o banco oracle - [Iury] ok 
+[] - usar o knex para fazer select - [Iury] ok 
+[] - criar a função para fazer o select - [Iury] ok 
 [] - converter para string (verificar) - [Ana]
 [] - função converter dados para HTML - [Ana]
 [] - função enviar email assincrona - [Ana]

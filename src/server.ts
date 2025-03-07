@@ -2,6 +2,12 @@ import { app } from "./app";
 import { env } from "./schemas";
 import { knex } from "./database/config";
 
+/**
+ * @description Conecta ao banco de dados Oracle
+ * @returns {Promise<void>} - mensagem de conexão com o banco de dados
+ * @throws {Error} - erro ao conectar ao banco de dados
+ */
+
 async function connectToOracle() {
   const connection = await knex()
   if(connection) {

@@ -4,6 +4,11 @@ import { queryTratamentoMain } from "@/service/querys/queryMain";
 import fs from "fs";
 import path from "path";
 
+/**
+ * @description Gera o arquivo HTML com os dados dos erros, sucessos e main
+ * @returns {Promise<string>} - string do arquivo HTML
+ * @throws {Error} - erro ao gerar o arquivo HTML
+ */
 export const htmlFile = async (): Promise<string> => {
  
     const htmlFile = path.join(__dirname, "./src/templates/email.html");
@@ -14,7 +19,7 @@ export const htmlFile = async (): Promise<string> => {
     htmlContent = htmlContent.replace(/{{main}}/, await queryTratamentoMain());
 
     console.log(htmlContent);
-    
+
     return htmlContent;
 }
 

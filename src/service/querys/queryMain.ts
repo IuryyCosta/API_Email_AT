@@ -1,6 +1,11 @@
 import { knex } from "@/database/config";
 
 
+/**
+ * @description Consulta os dados da tabela atendimento_paciente_v
+ * @returns {Promise<any[]>} - array de dados
+ * @throws {Error} - erro ao executar a queryMain
+ */
 const queryMain = async (): Promise<any[]> => {
 
     const query = knex('tasy.atendimento_paciente_v as ap')
@@ -29,6 +34,11 @@ try {
 }
 
 
+/**
+ * @description Trata os dados da tabela atendimento_paciente_v
+ * @returns {Promise<string>} - string de dados
+ * @throws {Error} - erro ao executar a queryTratamentoMain
+ */
 export const queryTratamentoMain = async (): Promise<string> => {
     
     const result = await queryMain();

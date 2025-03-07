@@ -1,7 +1,15 @@
 import { knex as setupKnex } from "knex";
 
 
-
+/**
+ * @description Conecta ao banco de dados Oracle
+ * @param host - host do banco de dados
+ * @param user - usuário do banco de dados
+ * @param password - senha do usuário
+ * @param database - nome do banco de dados
+ * @returns {Promise<string>} - mensagem de conexão com o banco de dados
+ * @throws {Error} - erro ao conectar ao banco de dados
+ */
 export const getOracleConnection = async (host:string, user:string , password:string, database:string) => {
 
 try {

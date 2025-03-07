@@ -1,5 +1,11 @@
 import { knex } from "@/database/config";
 
+
+/**
+ * @description Consulta os sucessos e erros do banco de dados Oracle
+ * @returns {Promise<string>} - string de sucessos e erros
+ * @throws {Error} - erro ao executar a querySucessError
+ */
 const querySucessError = async (): Promise<string> => {
     try {
         const query = knex
@@ -39,6 +45,11 @@ const querySucessError = async (): Promise<string> => {
 }
 
 
+/**
+ * @description Trata os sucessos e erros do banco de dados Oracle
+ * @returns {Promise<string>} - string de sucessos e erros
+ * @throws {Error} - erro ao executar a queryTratamentoSucessError
+ */
 export const queryTratamentoSucessError = async (): Promise<string> => {
     
     const result = await querySucessError();

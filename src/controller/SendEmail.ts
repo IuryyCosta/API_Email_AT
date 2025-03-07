@@ -5,7 +5,14 @@ import { htmlFile } from "../utils/htmlFile";
 
 
 
-
+/**
+ * @description Envia um email para o destinatário com o assunto "teste" e o corpo do email sendo o htmlFile
+ * @returns {Promise<{ message: string }>}
+ * @throws {Error} Se ocorrer um erro ao enviar o email
+ * @example
+ * const sendEmail = new SendEmailController();
+ * sendEmail.create();
+ */
 export class SendEmailController {
   async create() {
   

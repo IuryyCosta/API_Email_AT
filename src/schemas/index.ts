@@ -14,6 +14,9 @@ export const sendEmailSchema = z.object({
   ORACLE_DATABASE: z.string(),
   ORACLE_LIB_DIR: z.string(),
   ORACLE_CONNECT_STRING: z.string(),
+  EXECUTION_HOUR: z.string().transform(Number).pipe(
+    z.number().min(0).max(23)
+)
 })
 
 const _env = sendEmailSchema.safeParse(process.env);
@@ -24,3 +27,4 @@ if (_env.success === false) {
 }
 
 export const env = _env.data;
+

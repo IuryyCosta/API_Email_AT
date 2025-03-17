@@ -50,16 +50,17 @@ export class SendAutomatic {
     }
 
     scheduleExecution() {
-        const targetHour = Number(env.EXECUTION_HOUR); // Agora TypeScript reconhece esta propriedade
+        const targetHour = Number(env.EXECUTION_HOUR);
+        const targetMinute = Number(env.EXECUTION_MINUTE);
         
-        console.log(`Agendando execução automática para ${targetHour}:00 todos os dias`);
+        console.log(`Agendando execução automática para ${targetHour}:${targetMinute.toString().padStart(2, '0')} todos os dias`);
 
         const scheduleNextExecution = () => {
             const now = new Date();
             const nextExecution = new Date();
-            nextExecution.setHours(targetHour, 0, 0, 0); // Define para a hora alvo
+            nextExecution.setHours(targetHour, targetMinute, 0, 0); // Define hora e minuto
 
-            // Se já passou da hora hoje, agenda para amanhã
+            // Se já passou do horário hoje, agenda para amanhã
             if (now.getTime() > nextExecution.getTime()) {
                 nextExecution.setDate(nextExecution.getDate() + 1);
             }

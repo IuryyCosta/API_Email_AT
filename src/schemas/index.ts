@@ -16,6 +16,9 @@ export const sendEmailSchema = z.object({
   ORACLE_CONNECT_STRING: z.string(),
   EXECUTION_HOUR: z.string().transform(Number).pipe(
     z.number().min(0).max(23)
+),
+EXECUTION_MINUTE: z.string().transform(Number).pipe(
+  z.number().min(0).max(59)
 )
 })
 

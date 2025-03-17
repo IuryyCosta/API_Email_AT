@@ -15,6 +15,9 @@ export const envSchema = z.object({
     EXECUTION_HOUR: z.string().transform(Number).pipe(
         z.number().min(0).max(23)
     ),
+    EXECUTION_MINUTE: z.string().transform(Number).pipe(
+        z.number().min(0).max(59)
+    ),
 });
 
 export const env = envSchema.parse(process.env);

@@ -6,7 +6,7 @@ import { env } from "@/schemas";
 
 /**
  * @description Classe para enviar emails automaticamente
- * @author Iury Consulta
+ * @author Iury Costa
  * @version 1.0.0
  * 
  */
@@ -18,6 +18,13 @@ export class SendAutomatic {
         this.sendEmail = new SendEmailController();
     }
 
+    /**  
+     * @description Executa o processo de envio de emails automaticamente
+     * @returns {Promise<{ erros: any[], sucess: any[], main: any[], email: any }>} Retorna um objeto com os resultados das consultas e o envio do email
+     * @example
+     * const sendAutomatic = new SendAutomatic();
+     * sendAutomatic.execute(); // Executa o processo de envio de emails automaticamente
+     */
     async execute() {
         try{
             console.log("Iniciando as consultas ao banco de dados");
@@ -54,7 +61,13 @@ export class SendAutomatic {
             
     }
 
- 
+   /**
+    * @description Agenda a execução automática do processo de envio de emails para um horário específico todos os dias
+    * @returns {void} Não retorna nada, apenas agenda a execução
+    * @example
+    * const sendAutomatic = new SendAutomatic();
+    * sendAutomatic.scheduleExecution(); // Agenda para executar no horário definido em EXECUTION_HOUR e EXECUTION_MINUTE
+    */
     scheduleExecution() {
         const targetHour = Number(env.EXECUTION_HOUR);
         const targetMinute = Number(env.EXECUTION_MINUTE);

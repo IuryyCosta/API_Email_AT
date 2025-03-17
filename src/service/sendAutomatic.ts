@@ -4,7 +4,12 @@ import { queryTratamentoMain } from "./querys/queryMain";
 import { queryTratamentoSucessError } from "./querys/querySucessError";
 import { env } from "@/schemas";
 
-
+/**
+ * @description Classe para enviar emails automaticamente
+ * @author Iury Consulta
+ * @version 1.0.0
+ * 
+ */
 export class SendAutomatic {
 
     private sendEmail: SendEmailController;
@@ -49,6 +54,7 @@ export class SendAutomatic {
             
     }
 
+ 
     scheduleExecution() {
         const targetHour = Number(env.EXECUTION_HOUR);
         const targetMinute = Number(env.EXECUTION_MINUTE);

@@ -23,7 +23,7 @@ export class SendEmailController {
     const { error } = await resend.emails.send({
       from: EMAIL_FROM,
       to: EMAIL_TO,
-      subject: "teste",
+      subject: "Atendimento Paciente - Relatório de Erros",
       html: await htmlFile(),
     });
 

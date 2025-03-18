@@ -26,24 +26,20 @@ export class SendAutomatic {
      * sendAutomatic.execute(); // Executa o processo de envio de emails automaticamente
      */
     async execute() {
-        try{
-            console.log("Iniciando as consultas ao banco de dados");
+        try {
+            console.log("Iniciando a consulta de erros ao banco de dados");
+            const errosResult = await queryTratamentoErros();
+            console.log("Consulta de erros finalizada:", errosResult);
 
-            const [errosResult, sucessResult, mainResult] = await Promise.all([
-                queryTratamentoErros(),
-                queryTratamentoSucessError(),
-                queryTratamentoMain()
-            ]);
-            
-            console.log("Consultas ao banco de dados finalizadas");
-            console.log(({
-                erros: errosResult,
-                sucess: sucessResult,
-                main: mainResult
-            }));
+            console.log("Iniciando a consulta de sucesso ao banco de dados");
+            const sucessResult = await queryTratamentoSucessError();
+            console.log("Consulta de sucesso finalizada:", sucessResult);
+
+            console.log("Iniciando a consulta principal ao banco de dados");
+            const mainResult = await queryTratamentoMain();
+            console.log("Consulta principal finalizada:", mainResult);
 
             console.log("Iniciando o envio de emails");
-            
             const emailResult = await this.sendEmail.create();
             console.log("Email enviado com sucesso", emailResult);
 
@@ -52,22 +48,13 @@ export class SendAutomatic {
                 sucess: sucessResult,
                 main: mainResult,
                 email: emailResult
-            }
-            
+            };
         } catch (error) {
-            console.error("Erro no processo do envio automatico", error);
+            console.error("Erro no processo do envio automático", error);
             throw new Error(`Falha no processo automático: ${error instanceof Error ? error.message : 'Erro desconhecido'}`);
         }
-            
     }
 
-   /**
-    * @description Agenda a execução automática do processo de envio de emails para um horário específico todos os dias
-    * @returns {void} Não retorna nada, apenas agenda a execução
-    * @example
-    * const sendAutomatic = new SendAutomatic();
-    * sendAutomatic.scheduleExecution(); // Agenda para executar no horário definido em EXECUTION_HOUR e EXECUTION_MINUTE
-    */
     scheduleExecution() {
         const targetHour = Number(env.EXECUTION_HOUR);
         const targetMinute = Number(env.EXECUTION_MINUTE);

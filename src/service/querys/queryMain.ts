@@ -6,50 +6,73 @@ import { knex } from "@/database/config";
  * @returns {Promise<any[]>} - array de dados
  * @throws {Error} - erro ao executar a queryMain
  */
-const queryMain = async (): Promise<any[]> => {
-
-    const query = knex('tasy.atendimento_paciente_v as ap')
-    .select(
-        knex.raw('COUNT(tasy.nr_atendimento) AS Legado'),
-        knex.raw('COUNT(api.nr_atendimento) AS API'),
-        knex.raw('COUNT(tasy.nr_atendimento) - COUNT(api.nr_atendimento) AS DIFERENCA')
-    )
-    .leftJoin('tasy.sus_laudo_paciente as a', 'a.nr_atendimento', 'ap.nr_atendimento')
-    .leftJoin('tbl_inm_atendimento as api', 'tasy.nr_atendimento', 'api.nr_atendimento')
-    .where('a.dt_cancelamento', 'null')
-    .andWhere('ie_tipo_atendimento', 1)
-    .andWhere('cd_convenio', 4)
-    .andWhereRaw('TRUNC(dt_alta) = TRUNC(SYSDATE - 1)') // Alteração para pegar o dia anterior
-    .groupBy('tasy.nr_atendimento');
-
-try {
-    const result = await query;
-    console.log(`Query executada com sucesso: ${JSON.stringify(result)}`);
-    return result;
-} catch (error) {
-    console.error("Erro ao executar a query:", error);
-    throw error;
-}
-
-}
 
 
-/**
- * @description Trata os dados da tabela atendimento_paciente_v
- * @returns {Promise<string>} - string de dados
- * @throws {Error} - erro ao executar a queryTratamentoMain
- */
+export const queryMain = async (): Promise<any[]> => {
+    const query = `
+    SELECT 
+        COUNT(mv.nr_atendimento) AS LEGADO,
+        COUNT(api.nr_atendimento) AS API,
+        COUNT(mv.nr_atendimento) - COUNT(api.nr_atendimento) AS DIFERENCA
+    FROM (
+        -- Subconsulta para obter o total de atendimentos de alta no dia anterior do sistema MV
+        SELECT DISTINCT 
+            atendime.cd_atendimento AS nr_atendimento
+        FROM 
+            dbamv.atendime
+        WHERE   
+            tp_atendimento = 'I'
+            AND cd_convenio = 1
+            AND dt_alta IS NOT NULL
+            AND TRUNC(dt_alta) = TRUNC(SYSDATE - 1) -- Alteração para pegar o dia anterior
+    ) mv
+    LEFT JOIN (
+        -- Total de atendimentos na tabela tbl_inm_atendimento para o dia anterior
+        SELECT DISTINCT 
+            nr_atendimento
+        FROM 
+            tbl_inm_atendimento
+        WHERE 
+            TP_STATUS <> 'A'
+            AND nr_atendimento IN (
+                SELECT DISTINCT 
+                    atendime.cd_atendimento AS nr_atendimento
+                FROM 
+                    dbamv.atendime
+                WHERE   
+                    tp_atendimento = 'I'
+                    AND cd_convenio = 1
+                    AND dt_alta IS NOT NULL
+                    AND TRUNC(dt_alta) = TRUNC(SYSDATE - 1) -- Alteração para pegar o dia anterior
+            )
+    ) api 
+    ON mv.nr_atendimento = api.nr_atendimento
+    `;
+
+    // Execute the query using knex.raw()
+    const result = await knex.raw(query);
+
+    return result.rows;
+};
+
+
 export const queryTratamentoMain = async (): Promise<string> => {
-    
-    const result = await queryMain();
+    try {
+        const result = await queryMain(); // Chama a função que executa a consulta SQL
 
-    if(result.length === 0) {
-        return "Nenhum resultado encontrado";
+        // Verifica se não há resultados
+        if (result.length === 0) {
+            return "Nenhum resultado encontrado";
+        }
+
+        // Extrai os valores de LEGADO, API e DIFERENCA
+        const { LEGADO, API, DIFERENCA } = result[0];
+
+        // Retorna o resultado formatado
+        return `Legado: ${LEGADO}, API: ${API}, DIFERENCA: ${DIFERENCA}`;
+
+    } catch (error) {
+        console.error("Erro ao executar a queryTratamentoMain:", error);
+        throw error;
     }
-
-    const tratamento = result[0];
-
-    const {Legado, API, DIFERENCA} = tratamento;
-    
-    return `Legado: ${Legado}, API: ${API}, DIFERENCA: ${DIFERENCA}`
-}
+};

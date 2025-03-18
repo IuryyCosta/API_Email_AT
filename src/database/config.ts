@@ -1,20 +1,25 @@
-import { env } from "@/schemas";
 import { knex as setupKnex } from "knex";
-import oracle from "oracledb";
+import { env } from "@/schemas";
+import oracledb from 'oracledb';
 
-oracle.initOracleClient({
-  libDir: env.ORACLE_LIB_DIR,
-});
+// Configurar o modo THICK (completo) em vez do modo THIN
+oracledb.initOracleClient({ libDir: env.ORACLE_LIB_DIR });
 
-export const configOracle = {
-  client: "oracledb",
-  connection: {
-    host: env.ORACLE_HOST,
-    user: env.ORACLE_USER,
-    password: env.ORACLE_PASSWORD,
-    database: env.ORACLE_DATABASE,
-    connectString: env.ORACLE_CONNECT_STRING,
-  },
+const config = {
+    client: "oracledb",
+    connection: {
+        user: env.ORACLE_USER,
+        password: env.ORACLE_PASSWORD,
+        connectString: env.ORACLE_CONNECT_STRING,
+        // Configurações específicas do Oracle
+        privilege: oracledb.SYSDBA,
+        // Forçar o uso do modo THICK
+        thin: false
+    },
+    pool: {
+        min: 2,
+        max: 10
+    }
 };
 
-export const knex = setupKnex(configOracle);
+export const knex = setupKnex(config);

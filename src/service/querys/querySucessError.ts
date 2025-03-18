@@ -6,44 +6,44 @@ import { knex } from "@/database/config";
  * @returns {Promise<string>} - string de sucessos e erros
  * @throws {Error} - erro ao executar a querySucessError
  */
-const querySucessError = async (): Promise<string> => {
+const querySucessError = async (): Promise<any[]> => {
     try {
-        const query = knex
-            .select(
-                knex.raw('S.SUCESSOS'),
-                knex.raw('E.ERROS')
-            )
-            .from(
-                knex
-                    .select(knex.raw('COUNT(TP_STATUS) AS SUCESSO'))
-                    .from('TBL_INM_ATENDIMENTO')
-                    .whereRaw("TRUNC(TO_DATE(DT_ALTA, 'DD/MM/YYYY HH24:MI:SS')) = TRUNC(SYSDATE - 1)")
-                    .andWhere('TP_STATUS', 'T')
-                    .groupBy('TP_STATUS')
-                    .as('S')
-            )
-            .join(
-                knex
-                    .select(knex.raw('COUNT(TP_STATUS) AS ERROS'))
-                    .from('TBL_INM_ATENDIMENTO')
-                    .whereRaw("TRUNC(TO_DATE(DT_ALTA, 'DD/MM/YYYY HH24:MI:SS')) = TRUNC(SYSDATE - 1)")
-                    .andWhere('TP_STATUS', 'E')
-                    .groupBy('TP_STATUS')
-                    .as('E'),
-                knex.raw('1=1') 
-            );
+        // Consulta SQL
+        const query = knex.raw(`
+            SELECT 
+                S.SUCESSO,
+                E.ERROS
+            FROM 
+                (SELECT DISTINCT 
+                    COUNT(TP_STATUS) AS SUCESSO,
+                    TP_STATUS    
+                FROM 
+                    TBL_INM_ATENDIMENTO 
+                WHERE 
+                    TRUNC(TO_DATE(DT_ALTA, 'DD/MM/YYYY HH24:MI:SS')) = TRUNC(SYSDATE - 1)
+                    AND TP_STATUS IN ('T')
+                GROUP BY TP_STATUS) S,
+                (SELECT DISTINCT 
+                    COUNT(TP_STATUS) AS ERROS,
+                    TP_STATUS    
+                FROM 
+                    TBL_INM_ATENDIMENTO 
+                WHERE 
+                    TRUNC(TO_DATE(DT_ALTA, 'DD/MM/YYYY HH24:MI:SS')) = TRUNC(SYSDATE - 1)
+                    AND TP_STATUS IN ('E')
+                GROUP BY TP_STATUS) E
+            WHERE 1 = 1
+        `);
 
-
-        const result = await query;
-        console.log(`Query executada com sucesso: ${JSON.stringify(result)}`);
-        return JSON.stringify(result); 
+        // Resultado da query
+        const result = await knex.raw(query);
+        return result.rows;
 
     } catch (error) {
         console.error("Erro ao executar a querySucessoError:", error);
         throw error;
     }
-}
-
+};
 
 /**
  * @description Trata os sucessos e erros do banco de dados Oracle
@@ -51,16 +51,23 @@ const querySucessError = async (): Promise<string> => {
  * @throws {Error} - erro ao executar a queryTratamentoSucessError
  */
 export const queryTratamentoSucessError = async (): Promise<string> => {
-    
-    const result = await querySucessError();
+    try {
+        // Chama a função que executa a consulta SQL
+        const result = await querySucessError();
 
-    if(!Array.isArray(result) || result.length === 0) {
-        return "Nenhum resultado encontrado Consulta Sucesso/Erro";
+        // Verifica se o resultado está vazio ou não é um array válido
+        if (!Array.isArray(result) || result.length === 0) {
+            return "Nenhum resultado encontrado Consulta Sucesso/Erro";
+        }
+
+        // Desestrutura o resultado
+        const { SUCESSO, ERROS } = result[0];
+
+        // Retorna o resultado formatado
+        return `Sucessos: ${SUCESSO}, Erros: ${ERROS}`;
+
+    } catch (error) {
+        console.error("Erro ao executar a queryTratamentoSucessError:", error);
+        throw error;
     }
-
-    const tratamento = result[0];
-    const {SUCESSOS, ERROS} = tratamento;
-
-    return `Sucessos: ${SUCESSOS}, Erros: ${ERROS}`
-    
-}
+};

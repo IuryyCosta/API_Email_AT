@@ -5,7 +5,8 @@ import fs from "fs";
 import path from "path";
 
 export const htmlFile = async (): Promise<string> => {
-    const htmlFile = path.resolve(__dirname, "../templates/email.html");
+    const htmlFile = path.resolve(__dirname, "../../templates/email.html");
+    console.log("Caminho do arquivo HTML:", htmlFile);
     let htmlContent = fs.readFileSync(htmlFile, "utf-8");
 
     const totalLegado = await queryTratamentoErros();
@@ -35,8 +36,7 @@ export const htmlFile = async (): Promise<string> => {
     return htmlContent;
 }
 
-
-const  getYesterdayDate = (): string => {
+const getYesterdayDate = (): string => {
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1); // Subtrai um dia
     return yesterday.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }); // Formata a data

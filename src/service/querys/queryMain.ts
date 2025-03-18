@@ -1,14 +1,14 @@
 import { knex } from "@/database/config";
 
 
-/**
- * @description Consulta os dados da tabela atendimento_paciente_v
- * @returns {Promise<any[]>} - array de dados
- * @throws {Error} - erro ao executar a queryMain
- */
+// /**
+//  * @description Consulta os dados da tabela atendimento_paciente_v
+//  * @returns {Promise<any[]>} - array de dados
+//  * @throws {Error} - erro ao executar a queryMain
+//  */
 
 
-export const queryMain = async (): Promise<any[]> => {
+export const queryMain = async () => {
     const query = `
     SELECT 
         COUNT(mv.nr_atendimento) AS LEGADO,
@@ -52,11 +52,11 @@ export const queryMain = async (): Promise<any[]> => {
     // Execute the query using knex.raw()
     const result = await knex.raw(query);
 
-    return result.rows;
+    return result;
 };
 
 
-export const queryTratamentoMain = async (): Promise<string> => {
+export const queryTratamentoMain = async () => {
     try {
         const result = await queryMain(); // Chama a função que executa a consulta SQL
 
@@ -69,7 +69,9 @@ export const queryTratamentoMain = async (): Promise<string> => {
         const { LEGADO, API, DIFERENCA } = result[0];
 
         // Retorna o resultado formatado
-        return `Legado: ${LEGADO}, API: ${API}, DIFERENCA: ${DIFERENCA}`;
+        return `<br> <strong> Legado:</strong> ${LEGADO} <br> 
+                <strong>API:</strong> ${API} <br>
+                <strong>DIFERENCA:</strong> ${DIFERENCA}`;
 
     } catch (error) {
         console.error("Erro ao executar a queryTratamentoMain:", error);

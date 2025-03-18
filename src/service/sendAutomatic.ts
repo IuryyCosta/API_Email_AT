@@ -86,3 +86,4 @@ export class SendAutomatic {
         scheduleNextExecution();
     }
 }
+

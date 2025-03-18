@@ -1,7 +1,7 @@
 import { knex } from "@/database/config";
 
 
-const queryErros = async (): Promise<any[]> => {
+export const queryErros = async () => {
     try {
         // Consulta SQL diretamente
         const query = `
@@ -29,21 +29,24 @@ const queryErros = async (): Promise<any[]> => {
 };
 
 
-export const queryTratamentoErros = async (): Promise<string> => {
+export const queryTratamentoErros = async () => {
     const result = await queryErros();
 
-    // Verificando se o resultado é um array e contém dados
-    if (!Array.isArray(result) || result.length === 0) {
-        return "Nenhum resultado encontrado na Consulta Erros";
+   // Verificando se o resultado é um array e contém dados
+   if (!Array.isArray(result) || result.length === 0) {
+    return []; // Retorna um array vazio se não houver resultados
     }
 
     // Formatação dos resultados
     const tratamento = result.map(
-        (item: { DS_ERRO: string; DS_ERRO_COUNT: string }) => {
-            return `Erro: ${item.DS_ERRO}, Quantidade: ${item.DS_ERRO_COUNT}`;
+        (item: { DS_ERRO: string; DS_ERRO_COUNT: number }) => {
+            return {
+                descricao: item.DS_ERRO,
+                quantidade: item.DS_ERRO_COUNT
+            };
         }
     );
 
-    // Retorna a lista formatada
-    return tratamento.join("\n");
+    // Retorna a lista formatada como um array de objetos
+    return tratamento;
 };

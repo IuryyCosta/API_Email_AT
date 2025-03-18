@@ -4,22 +4,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Relatório API DRG</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #343a40;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9; /* Alterna a cor de fundo das linhas */
+        }
+    </style>
 </head>
 <body>
-    <h3 style="color: #343a40;">Relatório de Extração Altas</h3>
-    <p><strong>Total Legado:</strong> [TOTAL_LEGADO]</p>
-    <p><strong>Total API:</strong> [TOTAL_API]</p>
-    <p><strong>Diferença:</strong> [DIFERENCA]</p>
+    <h1 style="color: #343a40;">Relatório de Extração DRG</h3>
     
+    <h3 style="color: #343a40;">Integrado API DRG</h3>
+        <p>API DRG Diferença: [TOTAL_ERRO]</p>
+
     <h3 style="color: #343a40;">Quantitativo de Sucesso e Erro</h3>
-    <p>Sucesso: [TOTAL_SUCESSO]</p>
-    <p>Erro: [TOTAL_ERRO]</p>
+        <p>[TOTAL_SUCESSO] <p>
     
-    <h3 style="color: #343a40;">Agrupamento dos Erros</h3>
-    <p>[ERROS_AGRUPADOS]</p>
+    <h3 style="color: #343a40;">Descrição dos Erros</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Erro</th>
+                <th>Quantidade</th>
+            </tr>
+        </thead>
+        <tbody>
+            [ERROS_AGRUPADOS]
+        </tbody>
+    </table>
     
     <footer>
-        <p><strong>Data de Extração:</strong> [DATA_EXTRACAO]</p>
+        <p><strong>Data de Extração:</strong> [DATA_EXTRACAO] </p>
     </footer>
 </body>
 </html>
